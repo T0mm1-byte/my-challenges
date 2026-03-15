@@ -1,0 +1,32 @@
+{
+  "title": "Rev Juice",
+  "description": "A good rever can help me to get some rev juice???",
+  "authors": [
+    "Tommaso Casti <@T0mm1>"
+  ],
+  "tags": [
+    "rev"
+  ],
+  "hiddenTags": [],
+  "order": 0,
+  "flags": [
+    "^srdnlen\\{I9C_SP6_CNL_I2C_SP2_I6C_SP6_SP6_SP5_CNL_I4C_SP1\\}$"
+  ],
+  "scoring": {
+    "type": "dynamic",
+    "start": 500,
+    "stop": 50,
+    "decay": 50
+  },
+  "files": [
+    {
+      "name": "rev_juice.zip",
+      "type": "upload",
+      "path": "./attachments/rev_juice.zip",
+      "dynamic": false
+    }
+  ],
+  "hints": [],
+  "event": "srdnlen CTF 2026",
+  "section": "rev"
+}
