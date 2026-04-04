@@ -1,0 +1,11 @@
+This repo is made to store the challenge I write for CTF events. In each challenge directory there are:
+- authors.txt: me and eventually other people I worked with
+- description.md: the description of the challenge
+- event.txt: the CTF the challenge is written for
+- flags.txt: the flag(s)
+- event_section.txt: the category
+- title.txt: the title of the challenge
+- writeup.md: the intended solution of the challenge. If you find an unintended: gg.
+- attachments: contains all the attachments of the challenge
+- src: contains all the source code used to make the content of the attachments
+- everything else is just for the competition and can be ignore  
