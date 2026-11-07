@@ -101,7 +101,7 @@ These functions describe the dump: there are 63 blocks, each of them has 4 byte 
 
 These lines configure the pin PB6 that is D10 on the board.
 
-![NUCLEO-F446RE pinout](writeup/nucleo_pinout.png)
+<img width="593" height="337" alt="nucleo_pinout" src="https://github.com/user-attachments/assets/62609f14-0d7b-40ee-a9c9-17ab32476456" />
 
 Once pressed the blue button eight times in three seconds the dump will start on pin D10 so the next thing to do is to connect the logic analyzer to the board to get it. The next steps are, from saleae logic, to use the serial analyzer in 8N1 mode with 115200 ad baudrate, export the data as a .csv and then write a script to build the firmware.
 
@@ -165,8 +165,7 @@ if __name__ == "__main__":
 
 Running the file command on firmware.bin will show that is a Cortex-M firmware as expected. Opening it in IDA shows a normal code of a STM32 firmware. In the main there is a function that I renamed "morse_send". This function dumps on another pin something in morse code. Unfortunately it's address is 0x800FC00, exactly where the firmware dump ends, so it's impossible to directly see it.
 
-![morse_send loop in main](writeup/morse_loop.png)
-
+<img width="319" height="127" alt="morse_loop" src="https://github.com/user-attachments/assets/39cf26cd-0bfc-44fe-8df9-49dee58e32ee" />
 
 Which pin does it use?
 
@@ -177,7 +176,7 @@ Which pin does it use?
 
 These two lines in main configure PA8 (D7) as an output pin. Unfortunately there is a loop before the one with morse_send, a loop that just wait for a value. Pressing "x" over it will show that the only function that writes on it is IRQ_40_handler that is the ISR that permits to dump the firmware. In blink.c it's written that only a part of it is given to the player so in the complete version there should be something new.
 
-![Long press check in IRQ_40_handler](writeup/irq_long_press.png)
+<img width="562" height="187" alt="irq_long_press" src="https://github.com/user-attachments/assets/8a743e98-c206-449c-a807-3af66546a654" />
 
 This part isn't present in blink.c and says that if the blue button is pressed for 5 seconds it changes the variable to 1 and the morse_send loop will start. Again it's needed to sample the signal with the logic analyzer on saleae logic, export the data and write a python script to build the message.
 
