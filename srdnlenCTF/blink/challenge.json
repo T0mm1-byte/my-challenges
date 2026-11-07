@@ -1,0 +1,33 @@
+{
+  "title": "Blink",
+  "description": "# Description\n\nThe police gave us a mysterious microcontroller, a STM32F446RE, retrieved in a big operation. They don't know exactly how it works but a mole got a piece of its source code. Can you help them to solve the case?\n\n## Note\n\n- This is a hardware challenge, you have to interact with the board\n- To do so you have to book your spot and you have 10 minutes there\n- You can go to the board as many times as you like but you can't book two adjacent time intervals\n- You can only interact with the board with your hand or using a logic analyzer provided by the staff\n- No ST-Link or other external hardware devices are allowed\n- Please, go only when you think you know what to do to not waste your and other's time",
+  "authors": [
+    "Tommaso Casti <@T0mm1>"
+  ],
+  "tags": [
+    "rev",
+    "hardware"
+  ],
+  "hiddenTags": [],
+  "order": 0,
+  "flags": [
+    "^srdnlen\\{m0rse_1s_4w3s0m3_but_n0t_v3ry_s3cur3_44378d\\}$"
+  ],
+  "scoring": {
+    "type": "dynamic",
+    "start": 500,
+    "stop": 50,
+    "decay": 8.0
+  },
+  "files": [
+    {
+      "name": "blink.c",
+      "type": "upload",
+      "path": "./attachments/blink.c",
+      "dynamic": false
+    }
+  ],
+  "hints": [],
+  "event": "Srdnlen CTF 2026 - Finals",
+  "section": "rev"
+}

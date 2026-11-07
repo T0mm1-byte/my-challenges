@@ -1,22 +1,22 @@
 TARGET  = blink
 BUILD   = build
 
-FLAG   ?= srdnlen{placeholder_flag}
+# The flag is defined in flag.c, not here.
 
 PREFIX  = arm-none-eabi-
 CC      = $(PREFIX)gcc
 OBJCOPY = $(PREFIX)objcopy
 SIZE    = $(PREFIX)size
 
-C_SRC = main.c morse.c dump.c flag.c device/system_stm32f1xx.c
-S_SRC = startup/startup_stm32f103xb.s
-LDSCRIPT = ld/STM32F103C8_FLASH.ld
+C_SRC = main.c morse.c dump.c flag.c device/system_stm32f4xx.c
+S_SRC = startup/startup_stm32f446xx.s
+LDSCRIPT = ld/STM32F446RE_FLASH.ld
 
 INCLUDES = -I. -Icmsis -Idevice
 
-DEFS = -DSTM32F103xB -DHSE_VALUE=8000000U -DFLAG_STRING='"$(FLAG)"'
+DEFS = -DSTM32F446xx -DHSE_VALUE=8000000U
 
-CPU = -mcpu=cortex-m3 -mthumb
+CPU = -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 
 CFLAGS  = $(CPU) $(DEFS) $(INCLUDES) -Os -g3 -std=c11 \
           -Wall -Wextra -Wno-unused-parameter \
@@ -45,7 +45,8 @@ $(BUILD)/$(TARGET).elf: $(OBJ)
 	$(CC) $(OBJ) $(LDFLAGS) -o $@
 	$(SIZE) $@
 
-# Pad to the full 64K with 0xFF so the image matches erased flash.
+# Pad to 64K with 0xFF so the image matches erased flash up to the end of
+# sector 3, flag block included. Sectors 4..7 are not touched.
 $(BUILD)/$(TARGET).bin: $(BUILD)/$(TARGET).elf
 	$(OBJCOPY) -O binary --gap-fill 0xFF --pad-to 0x08010000 $< $@
 

@@ -1,18 +1,20 @@
 /*
- * STM32F103C8 (Blue Pill) - 64K flash, 20K RAM.
+ * STM32F446RE (Nucleo-F446RE) - 512K flash, 128K RAM.
  *
- * Flash is split in two regions on purpose: the firmware is confined to the
- * first 63K (pages 0..62, the region the dump routine transmits) and the last
- * 1K page is reserved for the flag. Linking fails if the firmware ever grows
- * into the flag page.
+ * The F4 flash is organised in sectors (4 x 16K, 1 x 64K, 3 x 128K), not
+ * pages, but the image keeps the 64K layout of the original board: the
+ * firmware is confined to the first 63K (1K blocks 0..62, the region the
+ * dump routine transmits) and the next 1K block, at the top of sector 3, is
+ * reserved for the flag. Linking fails if the firmware ever grows into the
+ * flag block. Everything above 0x08010000 is left unused.
  *
- * Derived from the Ac6 STM32F103XB_FLASH.ld template shipped with
- * cmsis-device-f1.
+ * Derived from the STM32F103C8 script, itself based on the Ac6
+ * STM32F103XB_FLASH.ld template shipped with cmsis-device-f1.
  */
 
 ENTRY(Reset_Handler)
 
-_estack = 0x20005000;    /* top of 20K SRAM */
+_estack = 0x20020000;    /* top of 128K SRAM (SRAM1 + SRAM2) */
 
 _Min_Heap_Size  = 0x0;
 _Min_Stack_Size = 0x400;
@@ -20,13 +22,13 @@ _Min_Stack_Size = 0x400;
 MEMORY
 {
   FLASH  (rx)  : ORIGIN = 0x08000000, LENGTH = 63K
-  FLAGPG (r)   : ORIGIN = 0x0800FC00, LENGTH = 1K
-  RAM    (xrw) : ORIGIN = 0x20000000, LENGTH = 20K
+  FLAGBLK (r)  : ORIGIN = 0x0800FC00, LENGTH = 1K
+  RAM    (xrw) : ORIGIN = 0x20000000, LENGTH = 128K
 }
 
 _flash_start   = ORIGIN(FLASH);
-_flag_page     = ORIGIN(FLAGPG);
-_dump_pages    = LENGTH(FLASH) / 1024;
+_flag_block    = ORIGIN(FLAGBLK);
+_dump_blocks   = LENGTH(FLASH) / 1024;
 
 SECTIONS
 {
@@ -90,13 +92,13 @@ SECTIONS
     PROVIDE_HIDDEN (__fini_array_end = .);
   } >FLASH
 
-  /* Last flash page. Never transmitted by the dump routine. */
+  /* Flag block. Never transmitted by the dump routine. */
   .flag :
   {
     . = ALIGN(4);
     KEEP(*(.flag))
     . = ALIGN(4);
-  } >FLAGPG
+  } >FLAGBLK
 
   _sidata = LOADADDR(.data);
 

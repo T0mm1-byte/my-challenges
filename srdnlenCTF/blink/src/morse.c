@@ -27,13 +27,9 @@ static const morse_entry_t morse_table[] = {
 
 #define MORSE_TABLE_LEN (sizeof(morse_table) / sizeof(morse_table[0]))
 
-void morse_led(int on)
+void morse_out(int level)
 {
-#if MORSE_ACTIVE_LOW
-    MORSE_PORT->BSRR = on ? (1u << (MORSE_PIN + 16u)) : (1u << MORSE_PIN);
-#else
-    MORSE_PORT->BSRR = on ? (1u << MORSE_PIN) : (1u << (MORSE_PIN + 16u));
-#endif
+    MORSE_PORT->BSRR = level ? (1u << MORSE_PIN) : (1u << (MORSE_PIN + 16u));
 }
 
 static char lower(char c)
@@ -55,14 +51,14 @@ static const char *morse_lookup(char c)
 static void morse_symbol(const char *code)
 {
     for (const char *p = code; *p != '\0'; p++) {
-        morse_led(1);
+        morse_out(1);
         delay_ms(*p == '-' ? MORSE_DASH_MS : MORSE_DOT_MS);
-        morse_led(0);
+        morse_out(0);
         delay_ms(MORSE_GAP_MS);
     }
 }
 
-/* Reads the flag straight out of the last flash page, one character at a
+/* Reads the flag straight out of its flash block, one character at a
  * time. The volatile pointer keeps the compiler from folding the contents
  * into the dumped region. */
 void morse_send(const volatile char *s, uint32_t max_len)
