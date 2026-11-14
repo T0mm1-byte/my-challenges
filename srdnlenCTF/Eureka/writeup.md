@@ -30,19 +30,17 @@ Here's what the verilog does:
 - Top.sv: top module, connects every module
 - Top.xdc: costraints file to program the FPGA
 
-```bash
-#set_property -dict { PACKAGE_PIN M3    IOSTANDARD LVCMOS33 } [get_ports { pio1  }]; #IO_L8N_T1_AD14N_35 Sch=pio[01]
-#set_property -dict { PACKAGE_PIN L3    IOSTANDARD LVCMOS33 } [get_ports { pio2  }]; #IO_L8P_T1_AD14P_35 Sch=pio[02]
-```
-
-
-
 uartRX receives a bit at a time at 115386 bit/s (12MHz/104), after it got a full byte it sends it to bufferRX. bufferRX is a 16*16 byte matrix that contains up to 16 blocks of 16 bytes. If the buffer is full it ignores new bytes until there is room again. When the button managed by Button is pressed the block stored are encrypted. If the buffer is empty it's the flag the one that gets encrypted. When the board eneters the state of encryption bufferRX doesn't accept any new bytes until it's done. Crypto asks a block at a time until the buffer is empty. Once a block is encrypted is put in bufferTX. When Crypto finishes is job bufferRX can store new bytes while bufferTX starts sending it's bytes to uartTX to transmit them.
 There is no pipeline and the communciation between modules happens through handshakes to synchronize them.
 
 Now the aim is to connect the pc to the FPGA. In the .xdc file the pins L3 and M3 are set as RX and TX, in the official datasheet of the FPGA the pins are numbered from 1 and 48. To see the mapping between numbers and code names the easiest way is to go to the github page of Digilent (the company that produces the FPGA), go to the digilent-xdc repo and then to the repo named after the [FPGA](https://github.com/Digilent/digilent-xdc/blob/master/Cmod-A7-Master.xdc). There is a general .xdc file with the complete mapping. It's also possible to retrieve this info googling hard enough. It shows that pins M3 and L3 are 1 and 2. To test it's enough to press the button and see if the board puts the encrypted flag as output. 
 
+```bash
+#set_property -dict { PACKAGE_PIN M3    IOSTANDARD LVCMOS33 } [get_ports { pio1  }]; #IO_L8N_T1_AD14N_35 Sch=pio[01]
+#set_property -dict { PACKAGE_PIN L3    IOSTANDARD LVCMOS33 } [get_ports { pio2  }]; #IO_L8P_T1_AD14P_35 Sch=pio[02]
+```
 
+<img width="847" height="982" alt="Screenshot From 2026-11-07 11-20-50" src="https://github.com/user-attachments/assets/1c88ddfb-ca56-46a0-9287-661c404e98c9" />
 
 Now let's focus on the crypto part. 
 
